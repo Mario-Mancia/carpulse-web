@@ -1,0 +1,89 @@
+TASKLIST_USUARIO.txt — CarPulse · Fase 0 (base de la plataforma)
+=================================================================
+El script solo creó archivos y carpetas (no ejecutó Python ni Django).
+Los pasos 1 a 9 se hacen en la máquina donde tengas Python 3.12+ (o donde vayas a correr Django).
+Márcalas conforme avances.
+
+[ ] 0. BASE DE DATOS NUEVA (importante)
+    Usa un proyecto de Supabase NUEVO (o una base de datos separada) para CarPulse.
+    Si apuntas al mismo Postgres de 3DForge, las tablas "usuarios", "clientes",
+    "empleados" y "estados_usuarios" ya existen allí y la migración fallará
+    (o, peor, mezclaría los datos de los dos proyectos).
+
+[ ] 1. Entorno virtual (config/settings.py de startproject y db.sqlite3 ya no se usan; la base es Supabase) y dependencias
+        python3 -m venv .venv
+        source .venv/bin/activate
+        pip install -r requirements.txt
+    (Python 3.12 o superior; tú usas 3.14, perfecto.)
+
+[ ] 2. Completar el archivo .env
+    El script ya completó tu .env: agregó las variables que faltaban (con una DJANGO_SECRET_KEY
+    nueva) sin tocar las que ya tenías. Falta que pongas tu DATABASE_URL de Supabase:
+        DATABASE_URL=postgresql://USUARIO:CLAVE@HOST:PUERTO/postgres
+    - Para migrar y para correr las pruebas usa la conexión directa o el "Session pooler"
+      (puerto 5432). Las pruebas necesitan crear una base temporal (test_postgres).
+    - Si usas el "Transaction pooler" (puerto 6543), pon DB_POOLER_TRANSACCION=True.
+    - NUNCA subas el archivo .env a GitHub (ya está en .gitignore).
+
+[ ] 3. Verificar que Django arranca
+        python manage.py check
+
+[ ] 4. Generar las migraciones (las generas tú, Django es la fuente de verdad)
+        python manage.py makemigrations core usuarios clientes
+    Debe crear 0001_initial en apps/core, apps/usuarios y apps/clientes.
+    Si te muestra algún error, cópiamelo completo.
+
+[ ] 5. Aplicar las migraciones
+        python manage.py migrate
+    Al terminar se siembran solos: los 4 estados de usuario, los grupos
+    Customer / Operator / Administrator y la configuración "CarPulse".
+
+[ ] 6. Correr las pruebas (deben pasar las 71)
+        python manage.py test --settings=config.settings.test
+    Si alguna falla, pégame la salida completa.
+
+[ ] 7. Crear tu superusuario (cuenta de administrador de la plataforma)
+        python manage.py createsuperuser
+    Te pedirá correo, nombres, apellidos y contraseña. Luego marca su correo como verificado:
+        python manage.py verificar_correo TU_CORREO
+
+[ ] 8. Levantar el servidor
+        python manage.py runserver 0.0.0.0:8000
+
+[ ] 9. Probar a mano
+    - http://localhost:8000/                       inicio público (verde = se ve la marca CarPulse)
+    - http://localhost:8000/cuenta/login/          ingresa con tu superusuario
+    - te lleva a /gestion/ (panel de gestión)
+    - /gestion/configuracion/                      cambia el nombre, sube un logo y un favicon
+    - http://localhost:8000/admin/                 admin de Django (solo para ti, soporte técnico)
+    - /cliente/                                    con el superusuario debe dar 403 (es personal, no cliente)
+    - http://localhost:8000/cuenta/signup/         debe decir que el registro está cerrado (se abre en la Fase 2)
+
+[ ] 10. (Opcional) Crear un operador y un cliente de prueba para ver los permisos
+        python manage.py shell
+        >>> from apps.usuarios.services.usuarios import crear_empleado
+        >>> crear_empleado(correo="operador@demo.test", nombres="Olga", apellidos="Ramos",
+        ...     telefono=None, rol="Operator", password="Clave-segura-123",
+        ...     codigo_empleado="EMP-001", cargo="Soporte")
+        >>> from django.contrib.auth.models import Group
+        >>> from allauth.account.models import EmailAddress
+        >>> from apps.usuarios.models import Usuario
+        >>> from apps.clientes.services.clientes import asegurar_cliente
+        >>> u = Usuario.objects.create_user(correo="cliente@demo.test", password="Clave-segura-123",
+        ...     nombres="Carla", apellidos="Perez")
+        >>> u.groups.add(Group.objects.get(name="Customer")); asegurar_cliente(u)
+        >>> EmailAddress.objects.create(user=u, email=u.correo, verified=True, primary=True)
+    Comprueba: el operador entra a /gestion/ pero /gestion/configuracion/ le da 403;
+    el cliente entra a /cliente/ pero /gestion/ le da 403.
+
+[ ] 11. Guardar en Git (cuando todo esté bien)
+        git add -A
+        git status        # confirma que .env NO aparece
+        git commit -m "Fase 0: base de la plataforma CarPulse"
+
+[ ] 12. Avisarme el resultado de los pasos 4, 6 y 9 para pasar a la Fase 1.
+
+Notas
+-----
+- Los respaldos de cualquier archivo que el script haya reemplazado están en .respaldo/AAAAMMDD-HHMMSS/.
+- Para regenerar la Fase 0 desde cero: ./generar-fase0.sh -f  (respalda lo que cambie).

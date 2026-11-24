@@ -1,0 +1,25 @@
+:root {
+  --cp-primario: #0F4C81;
+  --cp-acento: #3A82F6;
+  --cp-fondo: #E6F0FA;
+  --cp-oscuro: #0A2540;
+  --bs-primary: #0F4C81;
+  --bs-primary-rgb: 15, 76, 129;
+  --bs-link-color: #0F4C81;
+  --bs-link-hover-color: #3A82F6;
+}
+
+body { background: var(--cp-fondo); color: var(--cp-oscuro); }
+.cp-barra { background: var(--cp-primario); }
+.cp-barra .navbar-brand { color: #fff; font-weight: 600; }
+.cp-hero { background: var(--cp-oscuro) center / cover no-repeat; color: #fff; }
+.cp-auth { max-width: 460px; }
+
+.btn-primary {
+  --bs-btn-bg: #0F4C81;
+  --bs-btn-border-color: #0F4C81;
+  --bs-btn-hover-bg: #0A2540;
+  --bs-btn-hover-border-color: #0A2540;
+  --bs-btn-active-bg: #0A2540;
+  --bs-btn-active-border-color: #0A2540;
+}

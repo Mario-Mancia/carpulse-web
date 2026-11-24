@@ -1,1 +1,19 @@
 clear
+# >>> carpulse
+.env
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+db.sqlite3
+staticfiles/
+.respaldo/
+.idea/
+.vscode/
+media/images/*
+media/files/*
+media/temp/*
+!media/images/.gitkeep
+!media/files/.gitkeep
+!media/temp/.gitkeep
+# <<< carpulse

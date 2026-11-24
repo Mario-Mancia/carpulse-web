@@ -1,0 +1,8 @@
+{% extends "layouts/panel.html" %}
+
+{% block titulo %}Mi panel · {{ nombre_plataforma }}{% endblock %}
+
+{% block contenido %}
+<h1 class="h3">Hola, {{ user.nombres }}</h1>
+<p class="text-body-secondary">Aquí verás tus vehículos y su estado cuando se habilite el registro de dispositivos.</p>
+{% endblock %}

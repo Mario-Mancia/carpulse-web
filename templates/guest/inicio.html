@@ -1,0 +1,13 @@
+{% extends "layouts/guest.html" %}
+
+{% block contenido %}
+<section class="cp-hero p-4 p-md-5 rounded-4"{% if recursos.hero_inicio %} style="background-image: linear-gradient(rgba(10,37,64,.72), rgba(10,37,64,.72)), url('{{ recursos.hero_inicio.url }}');"{% endif %}>
+  <h1 class="display-5 fw-bold">{{ nombre_plataforma }}</h1>
+  <p class="lead mb-4">Monitoreo OBD2 de tu vehículo: alertas, historial y mantenimiento en un solo lugar.</p>
+  {% if not user.is_authenticated %}
+    <a class="btn btn-light btn-lg" href="{% url 'account_login' %}">Ingresar</a>
+  {% else %}
+    <a class="btn btn-light btn-lg" href="{% url 'redirigir' %}">Ir a mi panel</a>
+  {% endif %}
+</section>
+{% endblock %}

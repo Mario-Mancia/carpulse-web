@@ -1,0 +1,11 @@
+{% extends "layouts/guest.html" %}
+
+{% block titulo %}Acceso bloqueado · {{ nombre_plataforma }}{% endblock %}
+
+{% block contenido %}
+<div class="mx-auto cp-auth text-center">
+  <h1 class="h3">Acceso bloqueado temporalmente</h1>
+  <p class="text-body-secondary">Se superó el número de intentos permitidos. Intente nuevamente más tarde.</p>
+  <a class="btn btn-primary" href="/">Volver al inicio</a>
+</div>
+{% endblock %}

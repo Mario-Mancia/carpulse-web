@@ -1,0 +1,13 @@
+{% extends "layouts/panel.html" %}
+
+{% block titulo %}Gestión · {{ nombre_plataforma }}{% endblock %}
+
+{% block contenido %}
+<h1 class="h3">Gestión</h1>
+<p class="text-body-secondary">Sesión de {{ user.nombre_completo }}.</p>
+{% if es_administrador %}
+<div class="list-group">
+  <a class="list-group-item list-group-item-action" href="{% url 'gestion:configuracion' %}">Configuración de la plataforma</a>
+</div>
+{% endif %}
+{% endblock %}
